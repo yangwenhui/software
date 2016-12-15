@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+<meta charset="utf-8"></meta>
+<meta http-equiv="X-UA-Compatible" content="IE=edge"></meta>
+<meta name="viewport" content="width=device-width, initial-scale=1"></meta>
+<meta name="description" content=""></meta>
+<meta name="author" content=""></meta>
+<title>照片生产模型平台</title>
+<!-- Bootstrap core CSS -->
+<link rel="stylesheet" type="text/css" th:href="@{css/bootstrap.min.css}"></link>
+<!-- Bootstrap core CSS -->
+<link rel="stylesheet" type="text/css" th:href="@{css/bootstrap-theme.min.css}"></link>
+<!-- Custom styles for this template -->
+<link rel="stylesheet" type="text/css" th:href="@{css/theme.css}"></link>
+<!-- jquery -->
+<script type="text/javascript" th:src="@{js/jquery-3.1.1.js}"></script>
+<!-- Bootstrap core js -->
+<script type="text/javascript" th:src="@{js/bootstrap.min.js}"></script>
+</head>
+
+<body>
+	<nav class="navbar navbar-default" role="navigation">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+					<span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="#"> <img alt="Brand" height="20" th:src="@{img/logo.png}" /></a>
+			</div>
+
+			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+				<ul class="nav navbar-nav">
+					<li><a href="#">北京中天易观信息技术有限公司</a></li>
+				</ul>
+				<form th:action="@{/logout}" method="post" class="navbar-form navbar-right" role="form">
+					<button type="submit" class="btn btn-default">退出登录</button>
+				</form>
+			</div>
+		</div>
+	</nav>
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+				<h3>说明</h3>
+				<p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui.</p>
+				<button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">创建项目</button>
+			</div>
+			<div class="col-md-12">
+				<div th:if="${param.error}" class="alert alert-danger" role="alert">
+					<strong>错误!</strong> Error
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+				<h3>历史项目</h3>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+				<table class="table table-hover">
+					<thead>
+						<tr>
+							<th>ID</th>
+							<th>名称</th>
+							<th>作者</th>
+							<th>创建时间</th>
+							<th>状态</th>
+							<th>进度</th>
+							<th>操作</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="project:${isps}">
+							<td th:text="${project.id}"></td>
+							<td th:text="${project.name}"></td>
+							<td th:text="${project.author}"></td>
+							<td th:text="${project.time}"></td>
+							<td>
+								<div th:switch="${project.status}">
+									<p th:case="'1'">创建</p>
+									<p th:case="'2'">已上传</p>
+									<p th:case="'3'">处理中</p>
+									<p th:case="'31'">处理失败</p>
+									<p th:case="'32'">等待人工处理</p>
+									<p th:case="'321'">人工处理完成</p>
+									<p th:case="'322'">人工处理失败</p>
+									<p th:case="'4'">完成</p>
+								</div>
+							</td>
+							<td th:text="${project.progress}"></td>
+							<td>
+										<a class="btn btn-default" th:href="@{/upload_img(projectId=${project.id})}" role="button">上传图片</a>
+										<a class="btn btn-default" th:href="@{/upload_obj(projectId=${project.id})}" role="button">上传模型</a>
+										<a class="btn btn-default" th:href="@{/project_file(projectId=${project.id})}" role="button">下载资源</a>
+										<a class="btn btn-default" th:href="@{/delete_project(projectId=${project.id})}" role="button">删除记录</a>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	<!-- 模态框（Modal） -->
+	<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<form role="form" th:action="@{/add_project}" method="post">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h4 class="modal-title" id="myModalLabel">创建项目</h4>
+					</div>
+					<div class="modal-body">
+						<input type="text" class="form-control input-lg" id="projectName2" placeholder="项目名称" name="name" required="required" />
+					</div>
+					<div class="modal-body">
+						<div th:if="${param.error}" class="alert alert-danger" role="alert">
+							<strong>提示!</strong> 名称错误
+						</div>
+					</div>
+
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+						<button type="submit" class="btn btn-primary">保存</button>
+					</div>
+				</form>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal -->
+	</div>
+</body>
+</html>
+
+
